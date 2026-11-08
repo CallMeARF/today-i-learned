@@ -1,41 +1,22 @@
 # Today I Learned (TIL)
 
-Kumpulan catatan singkat harian mengenai konsep programming, Git, backend, dan *best practices*.
+> Catatan harian ringkas berisi fakta atau trivia programming.
 
 ---
 
 ## 📚 Daftar Isi
 
 - [Git & GitHub](#git--github)
-  - [2026-11-09: Navigasi Commit (`HEAD~` vs `HEAD^`)](#2026-11-09-navigasi-commit-head-vs-head)
-    - [Simbol Caret (`^`)](#1-simbol-caret-)
-    - [Simbol Tilde (`~`)](#2-simbol-tilde-)
-    - [Aturan Cepat (Cheatsheet)](#3-aturan-cepat-cheatsheet)
-- [PHP & Backend](#php--backend)
+  - [2026-11-09: Asal Usul Nama "Git"](#2026-11-09-asal-usul-nama-git)
 
 ---
 
 ## Git & GitHub
 
-### 2026-11-09: Navigasi Commit (`HEAD~` vs `HEAD^`)
+### 2026-11-09: Asal Usul Nama "Git"
 
-Saat ingin berpindah atau melihat commit sebelum `HEAD` (commit saat ini), Git menyediakan dua simbol khusus: **Caret (`^`)** dan **Tilde (`~`)**. Sekilas fungsinya sama, tapi ada perbedaan mendasar:
+Linus Torvalds menamai *software* buatan ini secara humoris dan ironis. Dalam bahasa gaul Inggris (*British slang*), kata **"git"** adalah sebutan kasar yang berarti "orang yang tidak menyenangkan, bodoh, atau menyebalkan". Linus berseloroh, *"Saya orang yang egois, jadi saya menamai semua proyek saya sesuai nama saya sendiri: pertama Linux, dan sekarang Git."*
 
-#### 1. Simbol Caret (`^`)
-- **Fungsi:** Bergerak **secara horizontal** melintasi *parent* (orang tua) dari commit hasil *merge*.
-- `HEAD^` (atau `HEAD^1`) = Parent pertama dari commit saat ini.
-- `HEAD^2` = Parent kedua (cabang lain yang di-*merge* ke cabang ini).
-
-#### 2. Simbol Tilde (`~`)
-- **Fungsi:** Bergerak **secara vertikal** lurus ke belakang sesuai urutan riwayat commit.
-- `HEAD~1` = 1 commit di belakang HEAD.
-- `HEAD~2` = 2 commit di belakang HEAD (sama dengan `HEAD^^`).
-- `HEAD~5` = 5 commit di belakang HEAD.
-
-#### 3. Aturan Cepat (Cheatsheet)
-- Gunakan **`~N`** jika cuma ingin mundur **N langkah** ke belakang pada garis riwayat yang sama.
-- Gunakan **`^N`** khusus saat menelusuri **parent cabang lain** pada titik commit hasil *merge*.
+Secara teknis, Linus menyebut Git sebagai singkatan fleksibel tergantung *mood* pengembangnya: jika kinerjanya bagus maka berarti *Global Information Tracker*, namun jika terjadi *error* atau masalah pada sistem, maka Git berarti *Global Information Trash*.
 
 ---
-
-## PHP & Backend
