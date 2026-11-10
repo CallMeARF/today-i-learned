@@ -8,6 +8,7 @@
 
 - [Git & GitHub](#git--github)
   - [2026-11-09: Asal Usul Nama "Git"](#2026-11-09-asal-usul-nama-git)
+  - [2026-11-10: Efisiensi Forking Workflow & Cross-Repository PR](#2026-11-10-efisiensi-forking-workflow--cross-repository-pr)
 
 ---
 
