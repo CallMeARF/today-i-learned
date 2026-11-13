@@ -10,6 +10,7 @@
 - [2026-11-10: Efisiensi Forking Workflow & Cross-Repository PR](#2026-11-10-efisiensi-forking-workflow--cross-repository-pr)
 - [2026-11-11: Perbedaan `isset()` dan `empty()` dalam PHP](#2026-11-11-perbedaan-isset-dan-empty-dalam-php)
 - [2026-11-12: Perbedaan `include` dan `require` dalam PHP](#2026-11-12-perbedaan-include-dan-require-dalam-php)
+- [2026-11-13: Perbedaan Operator `==` dan `===` dalam PHP](#2026-11-13-perbedaan-operator--dan--dalam-php)
 
 ---
 
@@ -40,3 +41,9 @@ Dalam PHP, isset() dan empty() sama-sama digunakan untuk memeriksa suatu variabe
 PHP menyediakan include dan require untuk menyisipkan isi file PHP lain ke dalam file yang sedang dijalankan. Keduanya berguna untuk menghindari penulisan kode berulang, misalnya ketika memisahkan bagian header, footer, atau konfigurasi database ke dalam file tersendiri. Perbedaan utamanya terletak pada penanganan kesalahan ketika file yang dipanggil tidak ditemukan. include akan menghasilkan peringatan (warning), tetapi eksekusi program tetap dilanjutkan. Sebaliknya, require akan menghasilkan kesalahan fatal (Error) sehingga eksekusi program dihentikan. Oleh karena itu, require lebih tepat digunakan untuk file yang wajib tersedia agar aplikasi dapat berjalan, seperti konfigurasi database, sedangkan include dapat digunakan untuk bagian tambahan yang tidak selalu wajib ditampilkan.
 
 ---
+
+### 2026-11-13: Perbedaan Operator == dan === dalam PHP
+
+Dalam PHP, operator == dan === sama-sama digunakan untuk membandingkan dua nilai, tetapi memiliki aturan perbandingan yang berbeda. Operator == (loose comparison) hanya membandingkan nilai tanpa mengharuskan tipe datanya sama, sehingga PHP dapat melakukan konversi tipe data secara otomatis (type juggling). Sebaliknya, operator === (strict comparison) membandingkan nilai sekaligus tipe datanya. Sebagai contoh, 5 == "5" menghasilkan true karena nilainya dianggap sama setelah konversi tipe data, sedangkan 5 === "5" menghasilkan false karena satu nilai bertipe integer dan yang lainnya string. Oleh karena itu, operator === lebih disarankan ketika ingin memastikan nilai dan tipe data benar-benar sama sehingga menghindari hasil perbandingan yang tidak terduga.
+
+--
