@@ -11,6 +11,8 @@
 - [2026-11-11: Perbedaan `isset()` dan `empty()` dalam PHP](#2026-11-11-perbedaan-isset-dan-empty-dalam-php)
 - [2026-11-12: Perbedaan `include` dan `require` dalam PHP](#2026-11-12-perbedaan-include-dan-require-dalam-php)
 - [2026-11-13: Perbedaan Operator `==` dan `===` dalam PHP](#2026-11-13-perbedaan-operator--dan--dalam-php)
+- [2026-11-14: Mengapa `NULL = NULL` Menghasilkan `UNKNOWN` di SQL](#2026-11-14-mengapa-null--null-menghasilkan-unknown-di-sql)
+- [2026-11-15: Jebakan Perilaku `typeof null === "object"` di JavaScript](#2026-11-15-jebakan-perilaku-typeof-null--object-di-javascript)
 
 ---
 
@@ -46,4 +48,20 @@ PHP menyediakan include dan require untuk menyisipkan isi file PHP lain ke dalam
 
 Dalam PHP, operator == dan === sama-sama digunakan untuk membandingkan dua nilai, tetapi memiliki aturan perbandingan yang berbeda. Operator == (loose comparison) hanya membandingkan nilai tanpa mengharuskan tipe datanya sama, sehingga PHP dapat melakukan konversi tipe data secara otomatis (type juggling). Sebaliknya, operator === (strict comparison) membandingkan nilai sekaligus tipe datanya. Sebagai contoh, 5 == "5" menghasilkan true karena nilainya dianggap sama setelah konversi tipe data, sedangkan 5 === "5" menghasilkan false karena satu nilai bertipe integer dan yang lainnya string. Oleh karena itu, operator === lebih disarankan ketika ingin memastikan nilai dan tipe data benar-benar sama sehingga menghindari hasil perbandingan yang tidak terduga.
 
---
+---
+
+### 2026-11-14: Mengapa `NULL = NULL` Menghasilkan `UNKNOWN` di SQL
+
+Dalam SQL, `NULL` bukanlah sebuah nilai kosong atau nol, melainkan penanda bahwa suatu data **tidak diketahui** (_unknown_) atau belum ada. Karena sifatnya yang tidak diketahui, membandingkan dua nilai `NULL` menggunakan operator `=` (seperti `WHERE deleted_at = NULL`) tidak akan menghasilkan `TRUE`, melainkan `UNKNOWN`—yang pada klausa `WHERE` diperlakukan sama seperti `FALSE`.
+
+Itulah sebabnya _query_ `SELECT * FROM users WHERE deleted_at = NULL` selalu mengembalikan nol baris meskipun kolom tersebut banyak yang kosong. Untuk memeriksa keberadaan `NULL` secara akurat di SQL, wajib gunakan operator khusus **`IS NULL`** atau **`IS NOT NULL`**.
+
+---
+
+### 2026-11-15: Jebakan Perilaku `typeof null === "object"` di JavaScript
+
+Jika kamu menjalankan `typeof null` di JavaScript, hasilnya adalah `"object"`, bukan `"null"`. Perilaku ini sebenarnya adalah _bug_ historis sejak versi pertama JavaScript pada tahun 1995 yang tidak pernah diperbaiki demi menjaga kompatibilitas dengan jutaan situs web lama (_backward compatibility_).
+
+Pada implementasi awal mesin JavaScript, tipe data direpresentasikan menggunakan _type tag_ 32-bit, di mana tag `000` menandakan sebuah objek. Sementara itu, nilai `null` direpresentasikan sebagai _NULL pointer_ (`0x00` yang seluruh bitnya nol), sehingga mesin keliru membacanya sebagai `"object"`. Oleh karena itu, jangan pernah mengandalkan `typeof x === "object"` saja untuk mengecek objek; pastikan juga menambahkan kondisi `x !== null`.
+
+---
