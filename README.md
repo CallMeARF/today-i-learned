@@ -13,6 +13,7 @@
 - [2026-11-13: Perbedaan Operator `==` dan `===` dalam PHP](#2026-11-13-perbedaan-operator--dan--dalam-php)
 - [2026-11-14: Mengapa `NULL = NULL` Menghasilkan `UNKNOWN` di SQL](#2026-11-14-mengapa-null--null-menghasilkan-unknown-di-sql)
 - [2026-11-15: Jebakan Perilaku `typeof null === "object"` di JavaScript](#2026-11-15-jebakan-perilaku-typeof-null--object-di-javascript)
+- [2026-11-16: Mengapa `HttpOnly` Cookie Penting untuk Mencegah Pencurian Sesi XSS](#2026-11-16-mengapa-httponly-cookie-penting-untuk-mencegah-pencurian-sesi-xss)
 
 ---
 
@@ -63,5 +64,13 @@ Itulah sebabnya _query_ `SELECT * FROM users WHERE deleted_at = NULL` selalu men
 Jika kamu menjalankan `typeof null` di JavaScript, hasilnya adalah `"object"`, bukan `"null"`. Perilaku ini sebenarnya adalah _bug_ historis sejak versi pertama JavaScript pada tahun 1995 yang tidak pernah diperbaiki demi menjaga kompatibilitas dengan jutaan situs web lama (_backward compatibility_).
 
 Pada implementasi awal mesin JavaScript, tipe data direpresentasikan menggunakan _type tag_ 32-bit, di mana tag `000` menandakan sebuah objek. Sementara itu, nilai `null` direpresentasikan sebagai _NULL pointer_ (`0x00` yang seluruh bitnya nol), sehingga mesin keliru membacanya sebagai `"object"`. Oleh karena itu, jangan pernah mengandalkan `typeof x === "object"` saja untuk mengecek objek; pastikan juga menambahkan kondisi `x !== null`.
+
+---
+
+### 2026-11-16: Mengapa `HttpOnly` Cookie Penting untuk Mencegah Pencurian Sesi XSS
+
+Secara _default_, _cookie_ yang disimpan di _browser_ dapat dibaca dan dimodifikasi oleh JavaScript melalui properti `document.cookie`. Jika aplikasi web memiliki celah _Cross-Site Scripting_ (XSS), skrip berbahaya dari pihak ketiga bisa mencuri _session ID_ atau token autentikasi pengguna hanya dengan mengakses `document.cookie` lalu mengirimkannya ke server penyerang.
+
+Dengan menambahkan atribut **`HttpOnly`** pada header `Set-Cookie` dari sisi _server_, _browser_ akan melarang akses JavaScript terhadap _cookie_ tersebut dan hanya mengirimkannya secara otomatis melalui permintaan HTTP/HTTPS. Meskipun tidak mencegah serangan XSS itu sendiri, `HttpOnly` membatasi dampak serangan sehingga _session hijacking_ jauh lebih sulit dilakukan.
 
 ---
