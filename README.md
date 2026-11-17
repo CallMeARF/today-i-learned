@@ -14,6 +14,7 @@
 - [2026-11-14: Mengapa `NULL = NULL` Menghasilkan `UNKNOWN` di SQL](#2026-11-14-mengapa-null--null-menghasilkan-unknown-di-sql)
 - [2026-11-15: Jebakan Perilaku `typeof null === "object"` di JavaScript](#2026-11-15-jebakan-perilaku-typeof-null--object-di-javascript)
 - [2026-11-16: Mengapa `HttpOnly` Cookie Penting untuk Mencegah Pencurian Sesi XSS](#2026-11-16-mengapa-httponly-cookie-penting-untuk-mencegah-pencurian-sesi-xss)
+- [2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS](#2026-11-17-jebakan-z-index-dan-stacking-context-dalam-css)
 
 ---
 
@@ -72,5 +73,13 @@ Pada implementasi awal mesin JavaScript, tipe data direpresentasikan menggunakan
 Secara _default_, _cookie_ yang disimpan di _browser_ dapat dibaca dan dimodifikasi oleh JavaScript melalui properti `document.cookie`. Jika aplikasi web memiliki celah _Cross-Site Scripting_ (XSS), skrip berbahaya dari pihak ketiga bisa mencuri _session ID_ atau token autentikasi pengguna hanya dengan mengakses `document.cookie` lalu mengirimkannya ke server penyerang.
 
 Dengan menambahkan atribut **`HttpOnly`** pada header `Set-Cookie` dari sisi _server_, _browser_ akan melarang akses JavaScript terhadap _cookie_ tersebut dan hanya mengirimkannya secara otomatis melalui permintaan HTTP/HTTPS. Meskipun tidak mencegah serangan XSS itu sendiri, `HttpOnly` membatasi dampak serangan sehingga _session hijacking_ jauh lebih sulit dilakukan.
+
+---
+
+### 2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS
+
+Memberikan nilai `z-index: 9999` tidak selalu menjamin sebuah elemen akan tampil di lapisan paling depan. Dalam CSS, urutan tumpukan elemen (*layering*) tidak dihitung secara global, melainkan dibatasi oleh **`stacking context`** milik elemen induknya (*parent*).
+
+Sebuah elemen induk akan menciptakan *stacking context* baru apabila memiliki properti tertentu seperti `position` (selain `static`) dengan nilai `z-index` spesifik, `opacity` kurang dari `1`, `transform`, atau `filter`. Jika induk A memiliki `z-index: 1` dan induk B memiliki `z-index: 2`, maka elemen anak di dalam induk A tidak akan pernah bisa menutupi induk B meskipun diberi `z-index: 99999`. Memahami struktur *stacking context* mencegah penumpukan angka `z-index` yang tidak perlu saat menata komponen seperti *navbar*, *dropdown*, dan *modal*.
 
 ---
