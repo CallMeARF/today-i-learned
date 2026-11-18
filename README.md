@@ -15,6 +15,7 @@
 - [2026-11-15: Jebakan Perilaku `typeof null === "object"` di JavaScript](#2026-11-15-jebakan-perilaku-typeof-null--object-di-javascript)
 - [2026-11-16: Mengapa `HttpOnly` Cookie Penting untuk Mencegah Pencurian Sesi XSS](#2026-11-16-mengapa-httponly-cookie-penting-untuk-mencegah-pencurian-sesi-xss)
 - [2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS](#2026-11-17-jebakan-z-index-dan-stacking-context-dalam-css)
+- [2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux](#2026-11-18-mengapa-chmod-777-berbahaya-dan-cara-membaca-izin-file-linux)
 
 ---
 
@@ -81,5 +82,13 @@ Dengan menambahkan atribut **`HttpOnly`** pada header `Set-Cookie` dari sisi _se
 Memberikan nilai `z-index: 9999` tidak selalu menjamin sebuah elemen akan tampil di lapisan paling depan. Dalam CSS, urutan tumpukan elemen (*layering*) tidak dihitung secara global, melainkan dibatasi oleh **`stacking context`** milik elemen induknya (*parent*).
 
 Sebuah elemen induk akan menciptakan *stacking context* baru apabila memiliki properti tertentu seperti `position` (selain `static`) dengan nilai `z-index` spesifik, `opacity` kurang dari `1`, `transform`, atau `filter`. Jika induk A memiliki `z-index: 1` dan induk B memiliki `z-index: 2`, maka elemen anak di dalam induk A tidak akan pernah bisa menutupi induk B meskipun diberi `z-index: 99999`. Memahami struktur *stacking context* mencegah penumpukan angka `z-index` yang tidak perlu saat menata komponen seperti *navbar*, *dropdown*, dan *modal*.
+
+---
+
+### 2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux
+
+Saat mengalami kendala *permission denied* di Linux, menjalankan `chmod 777` sering dijadikan jalan pintas agar aplikasi langsung berjalan. Padahal, perintah ini memberikan hak akses penuh untuk membaca (`read` = 4), menulis (`write` = 2), dan mengeksekusi (`execute` = 1) file kepada tiga pihak sekaligus: pemilik file (*owner*), grup (*group*), dan semua pengguna lain di sistem (*others*).
+
+Jika sebuah direktori publik web diberi izin `777`, siapa pun atau skrip berbahaya yang berhasil masuk ke *server* dapat mengubah kode sumber maupun menyisipkan *malware* dengan bebas. Sebagai standar keamanan produksi, gunakan **`755`** untuk direktori (pemilik memiliki akses penuh, sementara yang lain hanya bisa membaca dan masuk ke direktori) dan **`644`** untuk file biasa agar hanya pemilik yang dapat memodifikasi isinya.
 
 ---
