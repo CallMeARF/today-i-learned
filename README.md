@@ -16,6 +16,7 @@
 - [2026-11-16: Mengapa `HttpOnly` Cookie Penting untuk Mencegah Pencurian Sesi XSS](#2026-11-16-mengapa-httponly-cookie-penting-untuk-mencegah-pencurian-sesi-xss)
 - [2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS](#2026-11-17-jebakan-z-index-dan-stacking-context-dalam-css)
 - [2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux](#2026-11-18-mengapa-chmod-777-berbahaya-dan-cara-membaca-izin-file-linux)
+- [2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya](#2026-11-19-mengenal-n1-query-problem-dan-cara-menghindarinya)
 
 ---
 
@@ -90,5 +91,13 @@ Sebuah elemen induk akan menciptakan *stacking context* baru apabila memiliki pr
 Saat mengalami kendala *permission denied* di Linux, menjalankan `chmod 777` sering dijadikan jalan pintas agar aplikasi langsung berjalan. Padahal, perintah ini memberikan hak akses penuh untuk membaca (`read` = 4), menulis (`write` = 2), dan mengeksekusi (`execute` = 1) file kepada tiga pihak sekaligus: pemilik file (*owner*), grup (*group*), dan semua pengguna lain di sistem (*others*).
 
 Jika sebuah direktori publik web diberi izin `777`, siapa pun atau skrip berbahaya yang berhasil masuk ke *server* dapat mengubah kode sumber maupun menyisipkan *malware* dengan bebas. Sebagai standar keamanan produksi, gunakan **`755`** untuk direktori (pemilik memiliki akses penuh, sementara yang lain hanya bisa membaca dan masuk ke direktori) dan **`644`** untuk file biasa agar hanya pemilik yang dapat memodifikasi isinya.
+
+---
+
+### 2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya
+
+*N+1 Query Problem* terjadi ketika sebuah aplikasi mengeksekusi **1 *query*** utama untuk mengambil daftar data induk (misalnya 20 artikel blog), lalu menjalankan **N *query*** tambahan secara berulang di dalam *loop* untuk mengambil data relasinya (misalnya nama penulis untuk masing-masing dari 20 artikel tersebut). Akibatnya, sistem melakukan 21 kali *round-trip* ke *database* hanya untuk memuat satu halaman.
+
+Masalah performa ini sering tersembunyi di balik fitur *lazy loading* bawaan ORM (seperti Eloquent di Laravel) saat data sampel masih sedikit, namun akan melambatkan aplikasi secara drastis ketika jumlah baris membengkak. Solusinya adalah menggunakan teknik ***eager loading*** (seperti `Article::with('author')->get()`), sehingga seluruh data relasi diambil sekaligus hanya dalam **2 *query*** terlepas dari berapa banyak baris data yang dimuat.
 
 ---
