@@ -17,6 +17,7 @@
 - [2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS](#2026-11-17-jebakan-z-index-dan-stacking-context-dalam-css)
 - [2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux](#2026-11-18-mengapa-chmod-777-berbahaya-dan-cara-membaca-izin-file-linux)
 - [2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya](#2026-11-19-mengenal-n1-query-problem-dan-cara-menghindarinya)
+- [2026-11-20: Perbedaan HTTP Status Code `401 Unauthorized` dan `403 Forbidden`](#2026-11-20-perbedaan-http-status-code-401-unauthorized-dan-403-forbidden)
 
 ---
 
@@ -80,24 +81,32 @@ Dengan menambahkan atribut **`HttpOnly`** pada header `Set-Cookie` dari sisi _se
 
 ### 2026-11-17: Jebakan `z-index` dan Stacking Context dalam CSS
 
-Memberikan nilai `z-index: 9999` tidak selalu menjamin sebuah elemen akan tampil di lapisan paling depan. Dalam CSS, urutan tumpukan elemen (*layering*) tidak dihitung secara global, melainkan dibatasi oleh **`stacking context`** milik elemen induknya (*parent*).
+Memberikan nilai `z-index: 9999` tidak selalu menjamin sebuah elemen akan tampil di lapisan paling depan. Dalam CSS, urutan tumpukan elemen (_layering_) tidak dihitung secara global, melainkan dibatasi oleh **`stacking context`** milik elemen induknya (_parent_).
 
-Sebuah elemen induk akan menciptakan *stacking context* baru apabila memiliki properti tertentu seperti `position` (selain `static`) dengan nilai `z-index` spesifik, `opacity` kurang dari `1`, `transform`, atau `filter`. Jika induk A memiliki `z-index: 1` dan induk B memiliki `z-index: 2`, maka elemen anak di dalam induk A tidak akan pernah bisa menutupi induk B meskipun diberi `z-index: 99999`. Memahami struktur *stacking context* mencegah penumpukan angka `z-index` yang tidak perlu saat menata komponen seperti *navbar*, *dropdown*, dan *modal*.
+Sebuah elemen induk akan menciptakan _stacking context_ baru apabila memiliki properti tertentu seperti `position` (selain `static`) dengan nilai `z-index` spesifik, `opacity` kurang dari `1`, `transform`, atau `filter`. Jika induk A memiliki `z-index: 1` dan induk B memiliki `z-index: 2`, maka elemen anak di dalam induk A tidak akan pernah bisa menutupi induk B meskipun diberi `z-index: 99999`. Memahami struktur _stacking context_ mencegah penumpukan angka `z-index` yang tidak perlu saat menata komponen seperti _navbar_, _dropdown_, dan _modal_.
 
 ---
 
 ### 2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux
 
-Saat mengalami kendala *permission denied* di Linux, menjalankan `chmod 777` sering dijadikan jalan pintas agar aplikasi langsung berjalan. Padahal, perintah ini memberikan hak akses penuh untuk membaca (`read` = 4), menulis (`write` = 2), dan mengeksekusi (`execute` = 1) file kepada tiga pihak sekaligus: pemilik file (*owner*), grup (*group*), dan semua pengguna lain di sistem (*others*).
+Saat mengalami kendala _permission denied_ di Linux, menjalankan `chmod 777` sering dijadikan jalan pintas agar aplikasi langsung berjalan. Padahal, perintah ini memberikan hak akses penuh untuk membaca (`read` = 4), menulis (`write` = 2), dan mengeksekusi (`execute` = 1) file kepada tiga pihak sekaligus: pemilik file (_owner_), grup (_group_), dan semua pengguna lain di sistem (_others_).
 
-Jika sebuah direktori publik web diberi izin `777`, siapa pun atau skrip berbahaya yang berhasil masuk ke *server* dapat mengubah kode sumber maupun menyisipkan *malware* dengan bebas. Sebagai standar keamanan produksi, gunakan **`755`** untuk direktori (pemilik memiliki akses penuh, sementara yang lain hanya bisa membaca dan masuk ke direktori) dan **`644`** untuk file biasa agar hanya pemilik yang dapat memodifikasi isinya.
+Jika sebuah direktori publik web diberi izin `777`, siapa pun atau skrip berbahaya yang berhasil masuk ke _server_ dapat mengubah kode sumber maupun menyisipkan _malware_ dengan bebas. Sebagai standar keamanan produksi, gunakan **`755`** untuk direktori (pemilik memiliki akses penuh, sementara yang lain hanya bisa membaca dan masuk ke direktori) dan **`644`** untuk file biasa agar hanya pemilik yang dapat memodifikasi isinya.
 
 ---
 
 ### 2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya
 
-*N+1 Query Problem* terjadi ketika sebuah aplikasi mengeksekusi **1 *query*** utama untuk mengambil daftar data induk (misalnya 20 artikel blog), lalu menjalankan **N *query*** tambahan secara berulang di dalam *loop* untuk mengambil data relasinya (misalnya nama penulis untuk masing-masing dari 20 artikel tersebut). Akibatnya, sistem melakukan 21 kali *round-trip* ke *database* hanya untuk memuat satu halaman.
+_N+1 Query Problem_ terjadi ketika sebuah aplikasi mengeksekusi **1 _query_** utama untuk mengambil daftar data induk (misalnya 20 artikel blog), lalu menjalankan **N _query_** tambahan secara berulang di dalam _loop_ untuk mengambil data relasinya (misalnya nama penulis untuk masing-masing dari 20 artikel tersebut). Akibatnya, sistem melakukan 21 kali _round-trip_ ke _database_ hanya untuk memuat satu halaman.
 
-Masalah performa ini sering tersembunyi di balik fitur *lazy loading* bawaan ORM (seperti Eloquent di Laravel) saat data sampel masih sedikit, namun akan melambatkan aplikasi secara drastis ketika jumlah baris membengkak. Solusinya adalah menggunakan teknik ***eager loading*** (seperti `Article::with('author')->get()`), sehingga seluruh data relasi diambil sekaligus hanya dalam **2 *query*** terlepas dari berapa banyak baris data yang dimuat.
+Masalah performa ini sering tersembunyi di balik fitur _lazy loading_ bawaan ORM (seperti Eloquent di Laravel) saat data sampel masih sedikit, namun akan melambatkan aplikasi secara drastis ketika jumlah baris membengkak. Solusinya adalah menggunakan teknik **_eager loading_** (seperti `Article::with('author')->get()`), sehingga seluruh data relasi diambil sekaligus hanya dalam **2 _query_** terlepas dari berapa banyak baris data yang dimuat.
+
+---
+
+### 2026-11-20: Perbedaan HTTP Status Code `401 Unauthorized` dan `403 Forbidden`
+
+Meskipun namanya mengandung kata _Unauthorized_, status kode **`401 Unauthorized`** sebenarnya merujuk pada kegagalan **autentikasi** (_unauthenticated_). Kode ini muncul ketika pengguna belum _login_, tidak menyertakan kredensial, atau token aksesnya sudah kedaluwarsa, sehingga server belum mengenali siapa yang mengirim permintaan tersebut.
+
+Sebaliknya, **`403 Forbidden`** berkaitan dengan **otorisasi** (_authorization_). Pada kondisi ini, server sudah mengetahui dan memverifikasi identitas pengguna, tetapi akun tersebut memang tidak memiliki hak akses (_permission_) untuk membuka sumber daya yang diminta—misalnya pengguna biasa mencoba mengakses halaman dasbor admin. Singkatnya: `401` berarti _"kamu siapa?"_, sedangkan `403` berarti _"aku tahu kamu siapa, tapi kamu tidak boleh masuk"_.
 
 ---
