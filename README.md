@@ -18,6 +18,7 @@
 - [2026-11-18: Mengapa `chmod 777` Berbahaya dan Cara Membaca Izin File Linux](#2026-11-18-mengapa-chmod-777-berbahaya-dan-cara-membaca-izin-file-linux)
 - [2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya](#2026-11-19-mengenal-n1-query-problem-dan-cara-menghindarinya)
 - [2026-11-20: Perbedaan HTTP Status Code `401 Unauthorized` dan `403 Forbidden`](#2026-11-20-perbedaan-http-status-code-401-unauthorized-dan-403-forbidden)
+- [2026-11-21: Mengapa `git revert` Lebih Aman daripada `git reset` di Branch Publik](#2026-11-21-mengapa-git-revert-lebih-aman-daripada-git-reset-di-branch-publik)
 
 ---
 
@@ -108,5 +109,13 @@ Masalah performa ini sering tersembunyi di balik fitur _lazy loading_ bawaan ORM
 Meskipun namanya mengandung kata _Unauthorized_, status kode **`401 Unauthorized`** sebenarnya merujuk pada kegagalan **autentikasi** (_unauthenticated_). Kode ini muncul ketika pengguna belum _login_, tidak menyertakan kredensial, atau token aksesnya sudah kedaluwarsa, sehingga server belum mengenali siapa yang mengirim permintaan tersebut.
 
 Sebaliknya, **`403 Forbidden`** berkaitan dengan **otorisasi** (_authorization_). Pada kondisi ini, server sudah mengetahui dan memverifikasi identitas pengguna, tetapi akun tersebut memang tidak memiliki hak akses (_permission_) untuk membuka sumber daya yang diminta—misalnya pengguna biasa mencoba mengakses halaman dasbor admin. Singkatnya: `401` berarti _"kamu siapa?"_, sedangkan `403` berarti _"aku tahu kamu siapa, tapi kamu tidak boleh masuk"_.
+
+---
+
+### 2026-11-21: Mengapa `git revert` Lebih Aman daripada `git reset` di Branch Publik
+
+Ketika sebuah _commit_ yang sudah di-_push_ ke _remote repository_ (seperti GitHub) ternyata mengandung _bug_, menggunakan `git reset --hard` untuk menghapusnya dapat merusak riwayat _commit_ rekan tim lain. Hal ini terjadi karena `git reset` menulis ulang sejarah (_history rewriting_) dan memaksa pengembang melakukan `git push --force`, yang berisiko memicu konflik parah pada salinan lokal anggota tim lainnya.
+
+Sebagai solusi yang aman untuk _branch_ publik atau bersama (`main`/`develop`), gunakan **`git revert <commit-hash>`**. Perintah ini tidak menghapus _commit_ lama, melainkan membuat **satu _commit_ baru** yang secara otomatis membalikkan seluruh perubahan dari _commit_ bermasalah tersebut. Dengan begitu, _bug_ teratasi tanpa mengubah sejarah Git yang sudah ada dan tetap bisa di-_push_ secara normal.
 
 ---
