@@ -19,6 +19,7 @@
 - [2026-11-19: Mengenal N+1 Query Problem dan Cara Menghindarinya](#2026-11-19-mengenal-n1-query-problem-dan-cara-menghindarinya)
 - [2026-11-20: Perbedaan HTTP Status Code `401 Unauthorized` dan `403 Forbidden`](#2026-11-20-perbedaan-http-status-code-401-unauthorized-dan-403-forbidden)
 - [2026-11-21: Mengapa `git revert` Lebih Aman daripada `git reset` di Branch Publik](#2026-11-21-mengapa-git-revert-lebih-aman-daripada-git-reset-di-branch-publik)
+- [2026-11-22: Perbedaan Debouncing dan Throttling dalam JavaScript](#2026-11-22-perbedaan-debouncing-dan-throttling-dalam-javascript)
 
 ---
 
@@ -117,5 +118,13 @@ Sebaliknya, **`403 Forbidden`** berkaitan dengan **otorisasi** (_authorization_)
 Ketika sebuah _commit_ yang sudah di-_push_ ke _remote repository_ (seperti GitHub) ternyata mengandung _bug_, menggunakan `git reset --hard` untuk menghapusnya dapat merusak riwayat _commit_ rekan tim lain. Hal ini terjadi karena `git reset` menulis ulang sejarah (_history rewriting_) dan memaksa pengembang melakukan `git push --force`, yang berisiko memicu konflik parah pada salinan lokal anggota tim lainnya.
 
 Sebagai solusi yang aman untuk _branch_ publik atau bersama (`main`/`develop`), gunakan **`git revert <commit-hash>`**. Perintah ini tidak menghapus _commit_ lama, melainkan membuat **satu _commit_ baru** yang secara otomatis membalikkan seluruh perubahan dari _commit_ bermasalah tersebut. Dengan begitu, _bug_ teratasi tanpa mengubah sejarah Git yang sudah ada dan tetap bisa di-_push_ secara normal.
+
+---
+
+### 2026-11-22: Perbedaan Debouncing dan Throttling dalam JavaScript
+
+_Event_ seperti `input` pada kolom pencarian, `scroll`, atau `resize` dapat terpicu puluhan kali dalam satu detik. Jika setiap pemicu langsung menjalankan fungsi berat atau permintaan API (_API request_), performa _browser_ akan melambat dan _server_ terbebani. Untuk mengendalikannya, digunakan teknik _debouncing_ dan _throttling_.
+
+**Debouncing** menunda eksekusi fungsi hingga pengguna **berhenti memicu _event_** selama jeda waktu tertentu (misalnya 300ms)—sangat ideal untuk fitur _live search_ agar _request_ baru dikirim setelah pengguna selesai mengetik. Sebaliknya, **throttling** membatasi eksekusi fungsi agar hanya berjalan **maksimal satu kali dalam setiap interval waktu tertentu** meskipun _event_ terus berlangsung, sehingga lebih cocok untuk memantau posisi _scroll_ halaman atau pergerakan kursor.
 
 ---
