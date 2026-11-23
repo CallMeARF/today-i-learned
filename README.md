@@ -20,6 +20,7 @@
 - [2026-11-20: Perbedaan HTTP Status Code `401 Unauthorized` dan `403 Forbidden`](#2026-11-20-perbedaan-http-status-code-401-unauthorized-dan-403-forbidden)
 - [2026-11-21: Mengapa `git revert` Lebih Aman daripada `git reset` di Branch Publik](#2026-11-21-mengapa-git-revert-lebih-aman-daripada-git-reset-di-branch-publik)
 - [2026-11-22: Perbedaan Debouncing dan Throttling dalam JavaScript](#2026-11-22-perbedaan-debouncing-dan-throttling-dalam-javascript)
+- [2026-11-23: Mengapa `SELECT *` Menghambat Optimasi Covering Index di SQL](#2026-11-23-mengapa-select--menghambat-optimasi-covering-index-di-sql)
 
 ---
 
@@ -126,5 +127,13 @@ Sebagai solusi yang aman untuk _branch_ publik atau bersama (`main`/`develop`), 
 _Event_ seperti `input` pada kolom pencarian, `scroll`, atau `resize` dapat terpicu puluhan kali dalam satu detik. Jika setiap pemicu langsung menjalankan fungsi berat atau permintaan API (_API request_), performa _browser_ akan melambat dan _server_ terbebani. Untuk mengendalikannya, digunakan teknik _debouncing_ dan _throttling_.
 
 **Debouncing** menunda eksekusi fungsi hingga pengguna **berhenti memicu _event_** selama jeda waktu tertentu (misalnya 300ms)—sangat ideal untuk fitur _live search_ agar _request_ baru dikirim setelah pengguna selesai mengetik. Sebaliknya, **throttling** membatasi eksekusi fungsi agar hanya berjalan **maksimal satu kali dalam setiap interval waktu tertentu** meskipun _event_ terus berlangsung, sehingga lebih cocok untuk memantau posisi _scroll_ halaman atau pergerakan kursor.
+
+---
+
+### 2026-11-23: Mengapa `SELECT *` Menghambat Optimasi Covering Index di SQL
+
+Menggunakan `SELECT *` di lingkungan produksi tidak hanya memboroskan _bandwidth_ jaringan dan memori karena menarik kolom besar yang tidak terpakai (seperti kolom `TEXT` atau `BLOB`), tetapi juga menggagalkan optimasi **_covering index_** (_Index-Only Scan_) pada mesin _database_.
+
+Ketika kamu hanya memilih kolom spesifik yang kebetulan sudah tercakup di dalam sebuah _index_ (misalnya `SELECT id, email FROM users WHERE email = '...'`), _database_ dapat langsung mengembalikan hasil hanya dari struktur _index_ tanpa perlu membaca baris data aslinya di disk (_table lookup_). Sebaliknya, `SELECT *` memaksa _database_ mengambil seluruh kolom yang tidak ada di dalam _index_, sehingga operasi I/O disk meningkat drastis saat jumlah baris mencapai ratusan ribu.
 
 ---
