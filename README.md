@@ -21,6 +21,7 @@
 - [2026-11-21: Mengapa `git revert` Lebih Aman daripada `git reset` di Branch Publik](#2026-11-21-mengapa-git-revert-lebih-aman-daripada-git-reset-di-branch-publik)
 - [2026-11-22: Perbedaan Debouncing dan Throttling dalam JavaScript](#2026-11-22-perbedaan-debouncing-dan-throttling-dalam-javascript)
 - [2026-11-23: Mengapa `SELECT *` Menghambat Optimasi Covering Index di SQL](#2026-11-23-mengapa-select--menghambat-optimasi-covering-index-di-sql)
+- [2026-11-24: Risiko Keamanan `target="_blank"` Tanpa `rel="noopener"`](#2026-11-24-risiko-keamanan-target_blank-tanpa-relnoopener)
 
 ---
 
@@ -135,5 +136,13 @@ _Event_ seperti `input` pada kolom pencarian, `scroll`, atau `resize` dapat terp
 Menggunakan `SELECT *` di lingkungan produksi tidak hanya memboroskan _bandwidth_ jaringan dan memori karena menarik kolom besar yang tidak terpakai (seperti kolom `TEXT` atau `BLOB`), tetapi juga menggagalkan optimasi **_covering index_** (_Index-Only Scan_) pada mesin _database_.
 
 Ketika kamu hanya memilih kolom spesifik yang kebetulan sudah tercakup di dalam sebuah _index_ (misalnya `SELECT id, email FROM users WHERE email = '...'`), _database_ dapat langsung mengembalikan hasil hanya dari struktur _index_ tanpa perlu membaca baris data aslinya di disk (_table lookup_). Sebaliknya, `SELECT *` memaksa _database_ mengambil seluruh kolom yang tidak ada di dalam _index_, sehingga operasi I/O disk meningkat drastis saat jumlah baris mencapai ratusan ribu.
+
+---
+
+### 2026-11-24: Risiko Keamanan `target="_blank"` Tanpa `rel="noopener"`
+
+Membuka tautan eksternal di tab baru menggunakan `target="_blank"` memiliki celah keamanan klasik yang disebut **_reverse tabnabbing_**. Secara bawaan pada _browser_ versi lama, tab baru yang terbuka mendapatkan akses parsial ke objek `window.opener` milik halaman asal, sehingga situs eksternal tersebut dapat memanipulasi URL tab asal (misalnya mengarahkannya ke halaman _phishing_ palsu tanpa disadari pengguna).
+
+Selain risiko keamanan, tab baru tersebut juga berbagi _process_ yang sama dengan tab asal, sehingga skrip berat di halaman tujuan dapat memperlambat kinerja halaman kita. Meskipun _browser_ modern kini otomatis menerapkan perilaku `noopener` pada `target="_blank"`, menambahkan atribut **`rel="noopener noreferrer"`** secara eksplisit tetap menjadi praktik terbaik (_best practice_) untuk kompatibilitas lintas _browser_ serta menjaga privasi header `Referer`.
 
 ---
