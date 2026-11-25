@@ -22,6 +22,7 @@
 - [2026-11-22: Perbedaan Debouncing dan Throttling dalam JavaScript](#2026-11-22-perbedaan-debouncing-dan-throttling-dalam-javascript)
 - [2026-11-23: Mengapa `SELECT *` Menghambat Optimasi Covering Index di SQL](#2026-11-23-mengapa-select--menghambat-optimasi-covering-index-di-sql)
 - [2026-11-24: Risiko Keamanan `target="_blank"` Tanpa `rel="noopener"`](#2026-11-24-risiko-keamanan-target_blank-tanpa-relnoopener)
+- [2026-11-25: Bagaimana Atribut `SameSite` pada Cookie Mencegah Serangan CSRF](#2026-11-25-bagaimana-atribut-samesite-pada-cookie-mencegah-serangan-csrf)
 
 ---
 
@@ -144,5 +145,13 @@ Ketika kamu hanya memilih kolom spesifik yang kebetulan sudah tercakup di dalam 
 Membuka tautan eksternal di tab baru menggunakan `target="_blank"` memiliki celah keamanan klasik yang disebut **_reverse tabnabbing_**. Secara bawaan pada _browser_ versi lama, tab baru yang terbuka mendapatkan akses parsial ke objek `window.opener` milik halaman asal, sehingga situs eksternal tersebut dapat memanipulasi URL tab asal (misalnya mengarahkannya ke halaman _phishing_ palsu tanpa disadari pengguna).
 
 Selain risiko keamanan, tab baru tersebut juga berbagi _process_ yang sama dengan tab asal, sehingga skrip berat di halaman tujuan dapat memperlambat kinerja halaman kita. Meskipun _browser_ modern kini otomatis menerapkan perilaku `noopener` pada `target="_blank"`, menambahkan atribut **`rel="noopener noreferrer"`** secara eksplisit tetap menjadi praktik terbaik (_best practice_) untuk kompatibilitas lintas _browser_ serta menjaga privasi header `Referer`.
+
+---
+
+### 2026-11-25: Bagaimana Atribut `SameSite` pada Cookie Mencegah Serangan CSRF
+
+_Cross-Site Request Forgery_ (CSRF) terjadi ketika situs berbahaya memaksa _browser_ pengguna mengirimkan permintaan (_request_) ke situs lain tempat pengguna sedang _login_. Karena _browser_ secara otomatis menyertakan _session cookie_ pada setiap permintaan ke domain tujuan, server mengira permintaan palsu tersebut sah dari pengguna.
+
+Selain menggunakan _CSRF token_ di dalam _form_, _browser_ modern menyediakan perlindungan bawaan melalui atribut **`SameSite`** pada _cookie_ dengan tiga opsi utama: `Strict` (_cookie_ tidak pernah dikirim pada permintaan lintas situs), `Lax` (nilai _default_ _browser_ modern—_cookie_ hanya dikirim pada navigasi aman tingkat atas seperti klik tautan `GET`, bukan pada pengiriman _form_ `POST` atau `fetch` lintas domain), dan `None` (_cookie_ selalu dikirim, tetapi wajib disertai atribut `Secure` / HTTPS).
 
 ---
