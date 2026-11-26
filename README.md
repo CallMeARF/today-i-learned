@@ -23,6 +23,7 @@
 - [2026-11-23: Mengapa `SELECT *` Menghambat Optimasi Covering Index di SQL](#2026-11-23-mengapa-select--menghambat-optimasi-covering-index-di-sql)
 - [2026-11-24: Risiko Keamanan `target="_blank"` Tanpa `rel="noopener"`](#2026-11-24-risiko-keamanan-target_blank-tanpa-relnoopener)
 - [2026-11-25: Bagaimana Atribut `SameSite` pada Cookie Mencegah Serangan CSRF](#2026-11-25-bagaimana-atribut-samesite-pada-cookie-mencegah-serangan-csrf)
+- [2026-11-26: Perbedaan Operator `&&`, `||`, dan `;` saat Menggabungkan Perintah di Terminal](#2026-11-26-perbedaan-operator--dan--saat-menggabungkan-perintah-di-terminal)
 
 ---
 
@@ -153,5 +154,15 @@ Selain risiko keamanan, tab baru tersebut juga berbagi _process_ yang sama denga
 _Cross-Site Request Forgery_ (CSRF) terjadi ketika situs berbahaya memaksa _browser_ pengguna mengirimkan permintaan (_request_) ke situs lain tempat pengguna sedang _login_. Karena _browser_ secara otomatis menyertakan _session cookie_ pada setiap permintaan ke domain tujuan, server mengira permintaan palsu tersebut sah dari pengguna.
 
 Selain menggunakan _CSRF token_ di dalam _form_, _browser_ modern menyediakan perlindungan bawaan melalui atribut **`SameSite`** pada _cookie_ dengan tiga opsi utama: `Strict` (_cookie_ tidak pernah dikirim pada permintaan lintas situs), `Lax` (nilai _default_ _browser_ modern—_cookie_ hanya dikirim pada navigasi aman tingkat atas seperti klik tautan `GET`, bukan pada pengiriman _form_ `POST` atau `fetch` lintas domain), dan `None` (_cookie_ selalu dikirim, tetapi wajib disertai atribut `Secure` / HTTPS).
+
+---
+
+### 2026-11-26: Perbedaan Operator `&&`, `||`, dan `;` saat Menggabungkan Perintah di Terminal
+
+Saat menjalankan beberapa perintah sekaligus dalam satu baris di terminal (seperti Git Bash atau Linux Shell), pemilihan operator pemisah menentukan apakah perintah berikutnya tetap berjalan ketika perintah sebelumnya gagal (_exit code_ bukan `0`).
+
+- **`;` (Titik Koma)**: Menjalankan perintah secara berurutan tanpa peduli apakah perintah sebelumnya berhasil atau gagal.
+- **`&&` (Logika AND)**: Hanya menjalankan perintah kedua apabila perintah pertama **berhasil** (`exit code 0`). Sangat krusial untuk alur krusial seperti `git add . && git commit -m "update" && git push` agar tidak mendorong perubahan yang gagal di-_commit_.
+- **`||` (Logika OR)**: Kebalikan dari `&&`, hanya menjalankan perintah kedua apabila perintah pertama **gagal**—berguna sebagai mekanisme cadangan (_fallback_), misalnya `ping -c 1 google.com || echo "Koneksi terputus"`.
 
 ---
