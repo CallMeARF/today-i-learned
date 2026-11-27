@@ -24,6 +24,7 @@
 - [2026-11-24: Risiko Keamanan `target="_blank"` Tanpa `rel="noopener"`](#2026-11-24-risiko-keamanan-target_blank-tanpa-relnoopener)
 - [2026-11-25: Bagaimana Atribut `SameSite` pada Cookie Mencegah Serangan CSRF](#2026-11-25-bagaimana-atribut-samesite-pada-cookie-mencegah-serangan-csrf)
 - [2026-11-26: Perbedaan Operator `&&`, `||`, dan `;` saat Menggabungkan Perintah di Terminal](#2026-11-26-perbedaan-operator--dan--saat-menggabungkan-perintah-di-terminal)
+- [2026-11-27: Perbedaan `Promise.all()` dan `Promise.allSettled()` dalam JavaScript](#2026-11-27-perbedaan-promiseall-dan-promiseallsettled-dalam-javascript)
 
 ---
 
@@ -164,5 +165,13 @@ Saat menjalankan beberapa perintah sekaligus dalam satu baris di terminal (seper
 - **`;` (Titik Koma)**: Menjalankan perintah secara berurutan tanpa peduli apakah perintah sebelumnya berhasil atau gagal.
 - **`&&` (Logika AND)**: Hanya menjalankan perintah kedua apabila perintah pertama **berhasil** (`exit code 0`). Sangat krusial untuk alur krusial seperti `git add . && git commit -m "update" && git push` agar tidak mendorong perubahan yang gagal di-_commit_.
 - **`||` (Logika OR)**: Kebalikan dari `&&`, hanya menjalankan perintah kedua apabila perintah pertama **gagal**—berguna sebagai mekanisme cadangan (_fallback_), misalnya `ping -c 1 google.com || echo "Koneksi terputus"`.
+
+---
+
+### 2026-11-27: Perbedaan `Promise.all()` dan `Promise.allSettled()` dalam JavaScript
+
+Saat menjalankan beberapa permintaan _asynchronous_ secara bersamaan (misalnya memanggil tiga _endpoint_ API berbeda), developer sering menggunakan `Promise.all()`. Namun, `Promise.all()` memiliki perilaku **_fail-fast_**: jika satu saja _promise_ mengalami _reject_ (gagal), seluruh proses langsung berhenti dan melempar _error_ tanpa menunggu hasil dari _promise_ lainnya yang sebenarnya berhasil.
+
+Untuk skenario di mana setiap tugas independen dan kita tetap membutuhkan laporan hasil dari semua operasi, gunakan **`Promise.allSettled()`**. Metode ini selalu menunggu hingga seluruh _promise_ selesai—baik berhasil maupun gagal—lalu mengembalikan array objek berisi status masing-masing (`{ status: "fulfilled", value }` atau `{ status: "rejected", reason }`), sehingga kegagalan satu layanan tidak meruntuhkan data dari layanan lainnya.
 
 ---
